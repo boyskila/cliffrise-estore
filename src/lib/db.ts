@@ -1,6 +1,8 @@
 import { Pool } from "pg";
 
-export default new Pool({
+const db = new Pool({
   connectionString: process.env.DB_URL,
   ssl: { rejectUnauthorized: false },
 });
+
+export default db;

@@ -4,5 +4,4 @@ export type Product = {
   price: number;
   thumbnail: string;
   description?: string;
-  inStock: boolean;
 };
