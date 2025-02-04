@@ -1,8 +1,7 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
-  Button,
   Dialog,
   DialogPanel,
   Transition,
@@ -15,11 +14,11 @@ import { useFormStatus } from "react-dom";
 import { CloseIcon } from "./CloseIcon";
 import { CartButton } from "./CartButton";
 import { LoadingDots } from "../LoadingDots";
-import { Price } from "../Price";
-import { useCart } from "@/context/Cart";
 import { DeleteItemButton } from "./DeleteItemButton";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { EditItemQuantityButton } from "./EditItemQuantityButton";
+import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
+import { DEFAULT_CURRENCY } from "@/constants";
 
 export const DEFAULT_OPTION = "Default Title";
 
@@ -38,20 +37,29 @@ type MerchandiseSearchParams = {
 };
 
 export default function CartModal() {
-  const { cart, removeCartItem, addCartItem, isOpen, setIsOpen } = useCart();
-  const openCart = () => setIsOpen(true);
-  const closeCart = () => setIsOpen(false);
+  const {
+    cartCount,
+    incrementItem,
+    decrementItem,
+    removeItem,
+    cartDetails,
+    handleCartClick,
+    handleCloseCart,
+    shouldDisplayCart,
+    formattedTotalPrice,
+    currency = DEFAULT_CURRENCY,
+  } = useShoppingCart();
+  console.log({ cartCount, cartDetails });
 
-  const cartAmount = cart.reduce((finalAmount, { price }) => {
-    return finalAmount + parseFloat(price as any);
-  }, 0);
+  const openCart = () => handleCartClick();
+  const closeCart = () => handleCloseCart();
 
   return (
     <>
       <button aria-label="Open cart" onClick={openCart}>
-        <CartButton quantity={cart.length} />
+        <CartButton quantity={cartCount ?? 0} />
       </button>
-      <Transition show={isOpen}>
+      <Transition show={shouldDisplayCart}>
         <Dialog onClose={closeCart} className="relative z-50">
           <div
             className="backdrop-blur-[1px] fixed inset-0 bg-black/30"
@@ -74,7 +82,7 @@ export default function CartModal() {
                 </button>
               </div>
 
-              {cart.length === 0 ? (
+              {!cartCount ? (
                 <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
                   <ShoppingCartIcon className="h-16" />
                   <p className="mt-6 text-center text-2xl font-bold">
@@ -84,22 +92,14 @@ export default function CartModal() {
               ) : (
                 <div className="flex h-full flex-col justify-between overflow-hidden p-1">
                   <ul className="flex-grow overflow-auto py-4">
-                    {cart
+                    {Object.values(cartDetails ?? {})
                       .sort((a, b) => a.name.localeCompare(b.name))
-                      .filter((item, index, self) => {
-                        return (
-                          index ===
-                          self.findIndex(
-                            (t) => t.id === item.id && t.value === item.value
-                          )
-                        );
-                      })
-                      .map((item, i) => {
+                      .map(({ price, id, name, image = "" }, i) => {
                         const merchandiseSearchParams =
                           {} as MerchandiseSearchParams;
 
                         const merchandiseUrl = createUrl(
-                          `/product/${item.name}`,
+                          `/product/${name}`,
                           new URLSearchParams(merchandiseSearchParams)
                         );
 
@@ -112,7 +112,7 @@ export default function CartModal() {
                               <div className="absolute z-40 -ml-1 -mt-2">
                                 <DeleteItemButton
                                   onAction={() => {
-                                    removeCartItem(item);
+                                    removeItem(id);
                                   }}
                                 />
                               </div>
@@ -122,8 +122,8 @@ export default function CartModal() {
                                     className="h-full w-full object-cover"
                                     width={64}
                                     height={64}
-                                    alt={item.name}
-                                    src={item.img_url ?? item.thumbnail}
+                                    alt={name}
+                                    src={image}
                                   />
                                 </div>
                                 <Link
@@ -133,39 +133,38 @@ export default function CartModal() {
                                 >
                                   <div className="flex flex-1 flex-col text-base">
                                     <span className="leading-tight">
-                                      {item.name}
+                                      {name}
                                     </span>
                                     <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                      {item.name}
+                                      {name}
                                     </p>
                                   </div>
                                 </Link>
                               </div>
                               <div className="flex h-16 flex-col justify-between">
-                                <Price
-                                  className="flex justify-end space-y-2 text-right text-sm"
-                                  amount={item.price}
-                                />
+                                <div className="flex justify-end space-y-2 text-right text-sm">
+                                  {formatCurrencyString({
+                                    value: price,
+                                    currency,
+                                    language: "bg-BG",
+                                  })}
+                                </div>
                                 <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                   <EditItemQuantityButton
                                     type="minus"
                                     onClick={() => {
-                                      removeCartItem(item, false);
+                                      decrementItem(id);
                                     }}
                                   />
                                   <p className="w-6 text-center">
                                     <span className="w-full text-sm">
-                                      {
-                                        cart.filter(
-                                          ({ value }) => value === item.value
-                                        ).length
-                                      }
+                                      {cartDetails && cartDetails[id]?.quantity}
                                     </span>
                                   </p>
                                   <EditItemQuantityButton
                                     type="plus"
                                     onClick={() => {
-                                      addCartItem(item);
+                                      incrementItem(id, { count: 1 });
                                     }}
                                   />
                                 </div>
@@ -182,10 +181,9 @@ export default function CartModal() {
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>Total</p>
-                      <Price
-                        className="text-right text-base text-black dark:text-white"
-                        amount={cartAmount}
-                      />
+                      <div className="text-right text-base text-black dark:text-white">
+                        {formattedTotalPrice}
+                      </div>
                     </div>
                   </div>
                   <CheckoutButton />

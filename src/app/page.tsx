@@ -19,8 +19,9 @@ const Home = async () => {
   return (
     <section className="container mx-auto p-4">
       <ul className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-        {[...products, ...products, products[0]].map(
-          ({ name, thumbnail, price }, index) => {
+        {products
+          .filter((p) => p.thumbnail)
+          .map(({ name, thumbnail, price }, index) => {
             return (
               <li
                 key={name + index}
@@ -52,8 +53,7 @@ const Home = async () => {
                 </Link>
               </li>
             );
-          }
-        )}
+          })}
       </ul>
     </section>
   );
