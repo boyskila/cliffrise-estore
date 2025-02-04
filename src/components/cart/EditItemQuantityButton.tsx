@@ -1,5 +1,6 @@
 "use client";
 
+import { MouseEventHandler } from "react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
@@ -8,7 +9,7 @@ export function EditItemQuantityButton({
   onClick,
 }: {
   type: "plus" | "minus";
-  onClick: any;
+  onClick: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
     <div>

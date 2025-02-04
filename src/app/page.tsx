@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllProducts } from "./api/getAllProducts";
 import { createShimmerPlaceholder } from "@/lib/images";
-import { headers } from "next/headers";
 
 const gridItems = [
   "lg:h-[300]",
@@ -16,10 +15,6 @@ const gridItems = [
 ];
 
 const Home = async () => {
-  const header = await headers();
-  const currentPath = header.get("x-current-path");
-  console.log({ currentPath });
-
   const products = await getAllProducts();
   return (
     <section className="container mx-auto p-4">
