@@ -1,81 +1,25 @@
 "use client";
 
-import { ProductVariant } from "@/components/product/Variants";
-import {
-  getCartFromLocalStorage,
-  saveCartToLocalStorage,
-} from "@/lib/localStorage";
-import React, {
-  createContext,
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  use,
-  useEffect,
-  useState,
-} from "react";
+import { CartProvider as USCProvider } from "use-shopping-cart";
 
-type CartContextType = {
-  cart: ProductVariant[];
-  addCartItem: (variant: ProductVariant) => void;
-  removeCartItem: (
-    variant: ProductVariant,
-    shouldRemoveAllVariants?: boolean
-  ) => void;
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-};
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
+import React, { PropsWithChildren } from "react";
 
 export function CartProvider({ children }: PropsWithChildren) {
-  const [cart, setCart] = useState<ProductVariant[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const addCartItem = (variant: ProductVariant) => {
-    setCart([...cart, variant]);
-  };
-
-  useEffect(() => {
-    setCart(getCartFromLocalStorage());
-  }, []);
-
-  useEffect(() => {
-    saveCartToLocalStorage(cart);
-  }, [cart]);
-
-  const removeCartItem = (
-    variant: ProductVariant,
-    shouldRemoveAllVariants = true
-  ) => {
-    let removed = false;
-    setCart(
-      cart.filter(({ id, value }) => {
-        if (removed) {
-          return true;
-        }
-        if (id === variant.id && value === variant.value) {
-          removed = !shouldRemoveAllVariants;
-          return false;
-        }
-        return true;
-      })
-    );
-  };
-
   return (
-    <CartContext.Provider
-      value={{ addCartItem, cart, removeCartItem, isOpen, setIsOpen }}
+    <USCProvider
+      mode="payment"
+      cartMode="client-only"
+      stripe={process.env.NEXT_PUBLIC_STRIPE_KEY as string}
+      successUrl="http://localhost:3000"
+      cancelUrl="http://localhost:3000/nowosci"
+      currency="BGN"
+      billingAddressCollection
+      shouldPersist
+      language="bg-BG"
+      allowedCountries={["BG"]}
+      persistKey="cliffrise"
     >
       {children}
-    </CartContext.Provider>
+    </USCProvider>
   );
-}
-
-export function useCart() {
-  const context = use(CartContext);
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
 }

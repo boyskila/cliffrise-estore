@@ -1,7 +1,7 @@
-export type Product = {
-  id: string;
-  name: string;
-  price: number;
+import { Product as SCProduct } from "use-shopping-cart/core";
+
+export type Product = SCProduct & {
   thumbnail: string;
-  description?: string;
+  variant_type?: string;
+  variant_value?: string;
 };
