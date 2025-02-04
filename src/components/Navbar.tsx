@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import CartModal from "./cart/Modal";
 
 const { SITE_NAME } = process.env;

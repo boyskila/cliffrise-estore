@@ -11,11 +11,7 @@ export const Price = ({
   currencyCodeClassName?: string;
 }) => (
   <p className={className}>
-    {`${new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: currencyCode,
-      currencyDisplay: "narrowSymbol",
-    }).format(amount)}`}
+    {amount}
     <span className={clsx("ml-1 inline")}>{`${currencyCode}`}</span>
   </p>
 );
