@@ -1,17 +1,11 @@
-import clsx from "classnames";
-
-export const Price = ({
-  amount,
-  currencyCode = "BGN",
-  className,
-}: {
+type Props = {
   amount: number;
   className?: string;
-  currencyCode?: string;
-  currencyCodeClassName?: string;
-}) => (
+};
+
+export const Price = ({ amount, className }: Props) => (
   <p className={className}>
     {amount}
-    <span className={clsx("ml-1 inline")}>{`${currencyCode}`}</span>
+    <span className="ml-1 inline">BGN</span>
   </p>
 );

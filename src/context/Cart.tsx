@@ -1,8 +1,7 @@
 "use client";
 
-import { CartProvider as USCProvider } from "use-shopping-cart";
-
 import React, { PropsWithChildren } from "react";
+import { CartProvider as USCProvider } from "use-shopping-cart";
 
 export function CartProvider({ children }: PropsWithChildren) {
   return (

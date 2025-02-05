@@ -5,24 +5,26 @@ import { getProductVariants } from "@/app/api/getProductVariants";
 import { Gallery } from "@/components/product/Gallery";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
-export default async function ProductPage(props: {
+type Props = {
   params: Promise<{ slug: string }>;
-}) {
-  const params = await props.params;
+};
 
-  const products = await getProductVariants(decodeURIComponent(params.slug));
+export default async function ProductPage(props: Props) {
+  const { slug } = await props.params;
 
-  if (!products.length) {
+  const productVariants = await getProductVariants(decodeURIComponent(slug));
+
+  if (!productVariants.length) {
     return notFound();
   }
 
-  const { name, price, description } = products[0];
+  const { name, price, description } = productVariants[0];
 
   return (
     <div className="mx-auto max-w-screen-2xl px-4">
       <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
         <div className="h-full w-full basis-full lg:basis-4/6">
-          <Gallery products={products} />
+          <Gallery products={productVariants} />
         </div>
 
         <div className="basis-full lg:basis-2/6">
@@ -32,11 +34,11 @@ export default async function ProductPage(props: {
               <Price amount={price} />
             </div>
           </div>
-          <VariantSelector products={products} />
+          <VariantSelector products={productVariants} />
           <div className="mb-6 text-sm leading-tight dark:text-white/[60%]">
             {description}
           </div>
-          <AddToCartButton products={products} />
+          <AddToCartButton products={productVariants} />
         </div>
       </div>
     </div>

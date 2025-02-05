@@ -1,23 +1,22 @@
 "use client";
 
 import { Fragment } from "react";
+import { useFormStatus } from "react-dom";
 import {
   Dialog,
   DialogPanel,
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
+import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { useFormStatus } from "react-dom";
-import { CloseIcon } from "./CloseIcon";
+import { ReadonlyURLSearchParams } from "next/navigation";
 import { CartButton } from "./CartButton";
 import { LoadingDots } from "../LoadingDots";
 import { DeleteItemButton } from "./DeleteItemButton";
-import { ReadonlyURLSearchParams } from "next/navigation";
 import { EditItemQuantityButton } from "./EditItemQuantityButton";
-import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
 import { DEFAULT_CURRENCY } from "@/constants";
 
 export const DEFAULT_OPTION = "Default Title";
@@ -57,7 +56,7 @@ export default function CartModal() {
   return (
     <>
       <button aria-label="Open cart" onClick={openCart}>
-        <CartButton quantity={cartCount ?? 0} />
+        <CartButton quantity={cartCount} />
       </button>
       <Transition show={shouldDisplayCart}>
         <Dialog onClose={closeCart} className="relative z-50">
@@ -78,7 +77,9 @@ export default function CartModal() {
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold">My Cart</p>
                 <button aria-label="Close cart" onClick={closeCart}>
-                  <CloseIcon />
+                  <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
+                    <XMarkIcon className="h-6 transition-all ease-in-out hover:scale-110" />
+                  </div>
                 </button>
               </div>
 
