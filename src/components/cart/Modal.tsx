@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, MouseEventHandler } from "react";
 import { useFormStatus } from "react-dom";
 import {
   Dialog,
@@ -48,7 +48,6 @@ export default function CartModal() {
     formattedTotalPrice,
     currency = DEFAULT_CURRENCY,
   } = useShoppingCart();
-  console.log({ cartCount, cartDetails });
 
   const openCart = () => handleCartClick();
   const closeCart = () => handleCloseCart();
@@ -187,7 +186,7 @@ export default function CartModal() {
                       </div>
                     </div>
                   </div>
-                  <CheckoutButton />
+                  <CheckoutButton onClick={closeCart} />
                 </div>
               )}
             </DialogPanel>
@@ -198,12 +197,13 @@ export default function CartModal() {
   );
 }
 
-function CheckoutButton() {
+function CheckoutButton({ onClick }: { onClick?: MouseEventHandler }) {
   const { pending } = useFormStatus();
 
   return (
     <Link
-      href="/checkout"
+      href="/checkout/information"
+      onClick={onClick}
       className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
     >
       {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
