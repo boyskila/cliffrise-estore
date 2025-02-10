@@ -1,7 +1,7 @@
 import { Price } from "@/components/Price";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllProducts } from "./api/getAllProducts";
+import { getAllProducts } from "../api/getAllProducts";
 import { createShimmerPlaceholder } from "@/lib/images";
 
 const gridItems = [
