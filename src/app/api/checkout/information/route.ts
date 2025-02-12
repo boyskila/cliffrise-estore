@@ -9,8 +9,24 @@ export async function POST(request: NextRequest) {
   }
 
   const { set } = await cookies();
-  set("checkout_data", JSON.stringify(data));
-  set("checkout_step", "information");
+  set("checkout_data", JSON.stringify(data), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24, // Expires after 1 day
+  });
+  set("checkout_step", "information", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24, // Expires after 1 day
+  });
+  set("checkout_session", "asdf", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24, // Expires after 1 day
+  });
 
   return NextResponse.json({ success: true });
 }
