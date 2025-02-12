@@ -1,8 +1,10 @@
 "use client";
 import { MouseEvent } from "react";
 import { SuspendedCartDetails } from "@/components/checkout/CartDetails";
+import { useRouter } from "next/navigation";
 
 const InfoPage = () => {
+  const router = useRouter();
   return (
     <div>
       <form
@@ -12,15 +14,13 @@ const InfoPage = () => {
           const formData = new FormData(target as HTMLFormElement);
           const data = Object.fromEntries(formData.entries());
 
-          // Send data to the server
           const response = await fetch("/api/checkout/information", {
             method: "POST",
             body: JSON.stringify(data),
           });
 
           if (response.ok) {
-            // Redirect to the next step
-            window.location.href = "/checkout/shipping";
+            router.push("/checkout/shipping");
           }
         }}
       >
