@@ -7,12 +7,17 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const checkoutStep = request.cookies.get("checkout_step")?.value;
+  const checkoutSession = request.cookies.get("checkout_session")?.value;
 
   if (
     pathname.startsWith("/checkout/shipping") &&
     checkoutStep !== "information"
   ) {
     return NextResponse.redirect(new URL("/checkout/information", request.url));
+  }
+
+  if (pathname.startsWith("/checkout/") && !checkoutSession) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   if (pathname.startsWith("/checkout/payment") && checkoutStep !== "shipping") {
