@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
-  if (!data.name || !data.email) {
+  if (!data["firstName"] || !data.email) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
