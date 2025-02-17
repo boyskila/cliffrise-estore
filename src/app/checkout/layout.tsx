@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { Breadcrumbs } from "@/components/checkout/Breadcrumbs";
-import Link from "next/link";
 import { CartProvider } from "@/context/Cart";
+import { SuspendedCartDetails } from "@/components/checkout/CartDetails";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,13 +24,14 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
+      <body className="text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <CartProvider>
-          <header>
-            <Link href="/">HOme</Link>
-          </header>
           <Breadcrumbs />
-          {children}
+          <div className="h-full flex flex-col justify-between">
+            {children}
+            <footer className="h-[100px]">All rights reserved</footer>
+          </div>
+          <SuspendedCartDetails />
         </CartProvider>
       </body>
     </html>
