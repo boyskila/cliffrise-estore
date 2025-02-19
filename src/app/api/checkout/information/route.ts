@@ -9,19 +9,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { set } = await cookies();
-  set("checkout_data", JSON.stringify(data), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24, // Expires after 1 day
-  });
-  set("checkout_step", "information", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24, // Expires after 1 day
-  });
-  set("checkout_session", "asdf", {
+  set("checkout_data", JSON.stringify({ data, steps: { information: true } }), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",

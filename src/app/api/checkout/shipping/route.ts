@@ -28,7 +28,12 @@ export async function POST(request: NextRequest) {
 
   set(
     "checkout_data",
-    JSON.stringify({ ...checkoutData, address, deliveryFee }),
+    JSON.stringify({
+      ...checkoutData,
+      address,
+      deliveryFee,
+      steps: { ...checkoutData.steps, shipping: true },
+    }),
     {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -36,13 +41,6 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24, // Expires after 1 day
     }
   );
-
-  set("checkout_step", "shipping", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24, // Expires after 1 day
-  });
 
   return NextResponse.json({ success: true });
 }
