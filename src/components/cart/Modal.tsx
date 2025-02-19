@@ -1,7 +1,6 @@
 "use client";
 
-import { Fragment, MouseEventHandler } from "react";
-import { useFormStatus } from "react-dom";
+import { Fragment } from "react";
 import {
   Dialog,
   DialogPanel,
@@ -12,9 +11,8 @@ import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
 import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams, useRouter } from "next/navigation";
 import { CartButton } from "./CartButton";
-import { LoadingDots } from "../LoadingDots";
 import { DeleteItemButton } from "./DeleteItemButton";
 import { EditItemQuantityButton } from "./EditItemQuantityButton";
 import { DEFAULT_CURRENCY } from "@/constants";
@@ -36,6 +34,7 @@ type MerchandiseSearchParams = {
 };
 
 export default function CartModal() {
+  const router = useRouter();
   const {
     cartCount,
     incrementItem,
@@ -186,7 +185,23 @@ export default function CartModal() {
                       </div>
                     </div>
                   </div>
-                  <CheckoutButton onClick={closeCart} />
+                  <button
+                    onClick={async () => {
+                      try {
+                        const response = await fetch("/api/checkout/");
+                        if (response.ok) {
+                          const { redirectPath } = await response.json();
+                          router.push(redirectPath);
+                        }
+                        closeCart();
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    }}
+                    className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+                  >
+                    Proceed to Checkout
+                  </button>
                 </div>
               )}
             </DialogPanel>
@@ -194,19 +209,5 @@ export default function CartModal() {
         </Dialog>
       </Transition>
     </>
-  );
-}
-
-function CheckoutButton({ onClick }: { onClick?: MouseEventHandler }) {
-  const { pending } = useFormStatus();
-
-  return (
-    <Link
-      href="/checkout/information"
-      onClick={onClick}
-      className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-    >
-      {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
-    </Link>
   );
 }
