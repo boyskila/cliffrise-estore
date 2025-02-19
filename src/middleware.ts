@@ -6,22 +6,22 @@ export function middleware(request: NextRequest) {
   response.headers.set("x-current-path", currentPath); // Add custom header
 
   const { pathname } = request.nextUrl;
-  const checkoutStep = request.cookies.get("checkout_step")?.value;
+  const checkoutData = request.cookies.get("checkout_data")?.value;
   const checkoutSession = request.cookies.get("checkout_session")?.value;
+  const { steps } = checkoutData ? JSON.parse(checkoutData) : {};
 
-  if (
-    pathname.startsWith("/checkout/shipping") &&
-    checkoutStep !== "information"
-  ) {
+  if (pathname.startsWith("/checkout/shipping") && !steps?.information) {
     return NextResponse.redirect(new URL("/checkout/information", request.url));
   }
 
-  if (pathname.startsWith("/checkout/") && !checkoutSession) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (pathname.startsWith("/checkout/payment") && !steps?.shipping) {
+    return NextResponse.redirect(new URL("/checkout/shipping", request.url));
   }
 
-  if (pathname.startsWith("/checkout/payment") && checkoutStep !== "shipping") {
-    return NextResponse.redirect(new URL("/checkout/shipping", request.url));
+  // after successful payment the user lands on the success page
+  // we want to be sure that hitting the back button won't redirect the user back to the info page
+  if (pathname.startsWith("/checkout/information") && !checkoutSession) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;
