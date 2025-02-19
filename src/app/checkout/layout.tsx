@@ -24,14 +24,14 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
+      <body className="flex text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <CartProvider>
-          <Breadcrumbs />
-          <div className="h-full flex flex-col justify-between">
+          <div className="flex-1 h-full flex flex-col justify-between">
+            <Breadcrumbs />
             {children}
             <footer className="h-[100px]">All rights reserved</footer>
           </div>
-          <SuspendedCartDetails />
+          <SuspendedCartDetails isFixed={false} />
         </CartProvider>
       </body>
     </html>
