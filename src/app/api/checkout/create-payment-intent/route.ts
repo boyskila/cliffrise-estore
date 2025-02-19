@@ -8,12 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { price, currency } = body.cartDetails;
-
-  const { delete: deleteCookie } = await cookies();
-
-  deleteCookie("checkout_data");
-  deleteCookie("checkout_step");
-  deleteCookie("checkout_session");
+  console.log({ price, currency });
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -21,6 +16,9 @@ export async function POST(request: NextRequest) {
       currency: "BGN",
     });
 
+    const { delete: deleteCookie } = await cookies();
+    deleteCookie("checkout_data");
+    deleteCookie("checkout_session");
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
     console.error(err);
