@@ -64,8 +64,14 @@ function CheckoutForm() {
     if (error) {
       setError(error.message);
     } else if (paymentIntent.status === "succeeded") {
-      clearCart();
-      router.push("/success");
+      const response = await fetch("/api/checkout/success", {
+        method: "POST",
+        body: JSON.stringify({ completeSession: false }),
+      });
+      if (response.ok) {
+        clearCart();
+        router.push("/success");
+      }
     }
   };
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const currentPath = request.nextUrl.pathname; // Extract the pathname
   const response = NextResponse.next();
   response.headers.set("x-current-path", currentPath); // Add custom header
@@ -8,7 +8,12 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const checkoutData = request.cookies.get("checkout_data")?.value;
   const checkoutSession = request.cookies.get("checkout_session")?.value;
+  const isCheckoutSuccessful = request.cookies.get("success_checkout")?.value;
   const { steps } = checkoutData ? JSON.parse(checkoutData) : {};
+
+  if (pathname.startsWith("/success") && !isCheckoutSuccessful) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   if (pathname.startsWith("/checkout/shipping") && !steps?.information) {
     return NextResponse.redirect(new URL("/checkout/information", request.url));
