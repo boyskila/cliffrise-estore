@@ -1,6 +1,9 @@
 import * as Yup from "yup";
 
 export const shippingSchema = Yup.object().shape({
+  country: Yup.string()
+    .required("Country is required")
+    .oneOf(["Bulgaria", "Greece", "Romania"], "Please select a valid country"),
   firstName: Yup.string()
     .required("First name is required")
     .min(3, "Full name must be at least 3 characters"),

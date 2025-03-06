@@ -9,6 +9,7 @@ import { shippingSchema } from "@/forms/shippingValidationSchema";
 
 // Initial form values
 const initialValues = {
+  country: "",
   firstName: "",
   lastName: "",
   address: "",
@@ -158,6 +159,19 @@ const InfoPage = () => {
                         />
                         <ErrorMessage
                           name="city"
+                          component="div"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          type="text"
+                          name="country"
+                          placeholder="Country"
+                          className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
+                        />
+                        <ErrorMessage
+                          name="country"
                           component="div"
                           className="text-red-500 text-sm mt-1"
                         />
