@@ -1,20 +1,9 @@
 import React, { PropsWithChildren } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { Navbar } from "@/components/Navbar";
 import { CartProvider } from "@/context/Cart";
 import Footer from "@/components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "CliffRise",
@@ -23,7 +12,7 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en">
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <CartProvider>
           <Navbar />
