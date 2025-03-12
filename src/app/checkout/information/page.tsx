@@ -35,16 +35,29 @@ const InfoPage = () => {
 
   const handleSubmit: FormikConfig<typeof initialValues>["onSubmit"] = async (
     values,
-    { setSubmitting }
+    { setSubmitting, setFieldError }
   ) => {
     const { target } = event as unknown as MouseEvent;
     const formData = new FormData(target as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
+    const { error, recipientCity } = await appFetch<{
+      error: string;
+      recipientCity: { name: string };
+    }>("/api/checkout/validation/city", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    if (error === "City or post code not valid!") {
+      setFieldError("city", "Check city name");
+      setFieldError("zipCode", "Check zip code");
+      return;
+    }
 
     try {
       await appFetch("/api/checkout/information", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({ address: data, recipientCity }),
       });
       localStorage.setItem("shippingFormData", JSON.stringify(values));
       router.push("/checkout/shipping");
