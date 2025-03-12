@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   const deliveryFee = calculateDeliveryFee(address);
 
-  const { get, set } = await cookies();
+  const { get, set } = cookies();
   const cookieValue = get("checkout_data")?.value;
   if (!cookieValue) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });

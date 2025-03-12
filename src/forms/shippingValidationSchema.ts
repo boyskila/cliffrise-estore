@@ -17,9 +17,7 @@ export const shippingSchema = Yup.object().shape({
   email: Yup.string()
     .required("Email is required")
     .email("Invalid email address"),
-  zipCode: Yup.string()
-    .required("Zip code is required")
-    .matches(/^\d{4}$/, "Invalid Bulgarian zip code (must be 4 digits)"),
+  zipCode: Yup.string().required("Zip code is required"),
   phoneNumber: Yup.string()
     .required("Phone number is required")
     .matches(

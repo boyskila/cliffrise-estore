@@ -4,11 +4,7 @@ import { cookies } from "next/headers";
 export async function POST(request: NextRequest) {
   const data = await request.json();
 
-  if (!data["firstName"] || !data.email) {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
-  }
-
-  const { set } = await cookies();
+  const { set } = cookies();
   set("checkout_data", JSON.stringify({ data, steps: { information: true } }), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
