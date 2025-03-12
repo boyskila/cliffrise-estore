@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@headlessui/react";
 import { Formik, Form, Field, ErrorMessage, FormikConfig } from "formik";
 import { shippingSchema } from "@/forms/shippingValidationSchema";
+import { appFetch } from "@/lib/fetch";
 
 // Initial form values
 const initialValues = {
@@ -41,7 +42,7 @@ const InfoPage = () => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      await fetch("/api/checkout/information", {
+      await appFetch("/api/checkout/information", {
         method: "POST",
         body: JSON.stringify(data),
       });

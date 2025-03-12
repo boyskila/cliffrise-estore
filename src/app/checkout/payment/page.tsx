@@ -10,6 +10,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { useShoppingCart } from "use-shopping-cart";
+import { appFetch } from "@/lib/fetch";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -41,15 +42,16 @@ function CheckoutForm() {
     const cardElement = elements.getElement(CardElement);
 
     // Create a PaymentIntent on the server
-    const response = await fetch("/api/checkout/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cartDetails }),
-    });
-
-    const { clientSecret } = await response.json();
+    const { clientSecret } = await appFetch<{ clientSecret: string }>(
+      "/api/checkout/create-payment-intent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cartDetails }),
+      }
+    );
 
     // Confirm the payment with Stripe
     const { error, paymentIntent } = await stripe.confirmCardPayment(
@@ -64,14 +66,12 @@ function CheckoutForm() {
     if (error) {
       setError(error.message);
     } else if (paymentIntent.status === "succeeded") {
-      const response = await fetch("/api/checkout/success", {
+      await appFetch("/api/checkout/success", {
         method: "POST",
         body: JSON.stringify({ completeSession: false }),
       });
-      if (response.ok) {
-        clearCart();
-        router.push("/success");
-      }
+      clearCart();
+      router.push("/success");
     }
   };
 

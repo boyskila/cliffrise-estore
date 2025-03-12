@@ -16,6 +16,7 @@ import { CartButton } from "./CartButton";
 import { DeleteItemButton } from "./DeleteItemButton";
 import { EditItemQuantityButton } from "./EditItemQuantityButton";
 import { DEFAULT_CURRENCY } from "@/constants";
+import { appFetch } from "@/lib/fetch";
 
 export const DEFAULT_OPTION = "Default Title";
 
@@ -188,11 +189,10 @@ export default function CartModal() {
                   <button
                     onClick={async () => {
                       try {
-                        const response = await fetch("/api/checkout/");
-                        if (response.ok) {
-                          const { redirectPath } = await response.json();
-                          router.push(redirectPath);
-                        }
+                        const { redirectPath } = await appFetch<{
+                          redirectPath: string;
+                        }>("/api/checkout/");
+                        router.push(redirectPath);
                         closeCart();
                       } catch (error) {
                         console.log(error);
