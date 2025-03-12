@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@headlessui/react";
+import { Button, Select } from "@headlessui/react";
 import { Formik, Form, Field, ErrorMessage, FormikConfig } from "formik";
 import { shippingSchema } from "@/forms/shippingValidationSchema";
 import { appFetch } from "@/lib/fetch";
@@ -178,12 +178,14 @@ const InfoPage = () => {
                         />
                       </div>
                       <div>
-                        <Field
-                          type="text"
+                        <Select
                           name="country"
-                          placeholder="Country"
                           className="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
-                        />
+                        >
+                          <option>Bulgaria</option>
+                          <option>Greece</option>
+                          <option>Romania</option>
+                        </Select>
                         <ErrorMessage
                           name="country"
                           component="div"
